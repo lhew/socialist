@@ -1,0 +1,36 @@
+{
+  "name": "socialist",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "antd": "^3.25.0",
+    "formik": "^2.0.3",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-scripts-ts": "3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.0",
+    "@storybook/addon-actions": "^5.2.5",
+    "@storybook/addon-links": "^5.2.5",
+    "@storybook/addons": "^5.2.5",
+    "@storybook/react": "^5.2.5",
+    "@types/jest": "^24.0.21",
+    "@types/node": "^12.12.5",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
+    "babel-loader": "^8.0.6",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "tslint-react": "^4.1.0",
+    "typescript": "^3.7.2"
+  }
+}
