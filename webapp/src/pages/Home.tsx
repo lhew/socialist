@@ -3,10 +3,11 @@ import * as React from 'react'
 import axios from 'axios'
 import { Field, Form, Formik, FormikState, FormikHelpers } from 'formik'
 import LoggedIn from 'src/templates/LoggedIn'
-import { Button, List } from 'antd'
-import { CustomInput } from 'src/components/CustomField'
-import { nullSubmit } from 'src/utils'
-import ProductPreview from 'src/components/ProductPreview'
+import { Button, List, Spin } from 'antd'
+import { CustomInput } from '../components/CustomField'
+import { nullSubmit } from '../utils'
+import ProductPreview from '../components/ProductPreview'
+import { useAuth0 } from '../providers/react-auth0-spa'
 
 export interface IList {
   name: string
@@ -29,7 +30,7 @@ export default () => {
     item: '',
     ...list.reduce((result, item) => ({ ...result, [item.id]: item.name }), {}),
   }
-
+  const { user, isAuthenticated, loginWithRedirect, logout, loading } = useAuth0()
   const removeItem = (itemId: string | number) => changeList(list.filter(({ id }) => id !== itemId))
   const updateItem = (id: string | number, newItem: IList) =>
     changeList(list.map(item => (id === item.id ? newItem : item)))
@@ -76,6 +77,15 @@ export default () => {
 
   return (
     <LoggedIn>
+      {!isAuthenticated && <p onClick={loginWithRedirect}>Login pay</p>}
+      {isAuthenticated && (
+        <div>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+          <p onClick={logout}>logot</p>
+        </div>
+      )}
+      {loading && <Spin />}
+
       <Formik initialValues={initialValues} enableReinitialize onSubmit={nullSubmit}>
         {form => (
           <Form onSubmitCapture={handleSubmit.bind(null, form)}>
