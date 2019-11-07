@@ -1,14 +1,14 @@
 import { Button } from 'antd'
 import * as React from 'react'
 import { FormikHelpers } from 'formik'
-import { IList } from 'src/pages/Home'
+import { IProductItem } from 'types/IProductItem'
 
 interface IProductReview {
   form: FormikHelpers<any>
-  product: IList
+  product: IProductItem
   isFetching: boolean
   removeItem(id: string | number): void
-  updateItem(id: string | number, newItem: IList): void
+  updateItem(id: string | number, newItem: IProductItem): void
 }
 
 const ProductPreview = ({ product, form, updateItem, removeItem, isFetching }: IProductReview) => {

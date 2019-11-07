@@ -2,40 +2,31 @@ import * as React from 'react'
 import { useState, useEffect, useContext, createContext } from 'react'
 import createAuth0Client from '@auth0/auth0-spa-js'
 
-interface IAuth0Provider {
-  children: React.ReactNode
-  domain: string
-  client_id: string
-  redirect_uri: string
-  loading?: boolean
-  popupOpen?: boolean
-  loginWithPopup?(params: any): void
-  onRedirectCallback(appState: any): void
-}
+// interface IAuth0ProviderProps {
+//   children: React.ReactNode
+//   domain: string
+//   client_id: string
+//   redirect_uri: string
+//   loginWithPopup?(options?: PopupLoginOptions, config?: PopupConfigOptions): Promise<void>
+//   onRedirectCallback(appState: any): void
+// }
 
 export interface IAuth0 {
   user: any
   isAuthenticated: boolean
   loading?: boolean
-  loginWithRedirect(p: any): void
-  logout(p: any): void
 }
 
 const DEFAULT_REDIRECT_CALLBACK = () =>
   window.history.replaceState({}, document.title, window.location.pathname)
 
-export const Auth0Context = createContext({
-  user: {},
-  isAuthenticated: false,
-  loginWithRedirect: () => null,
-  logout: () => null,
-})
-export const useAuth0 = (): IAuth0 => useContext(Auth0Context)
+export const Auth0Context = createContext({} as any)
+export const useAuth0 = () => useContext(Auth0Context)
 export const Auth0Provider = ({
   children,
   onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
   ...initOptions
-}: IAuth0Provider) => {
+}: Auth0ClientOptions) => {
   const [isAuthenticated, setIsAuthenticated] = useState()
   const [user, setUser] = useState()
   const [auth0Client, setAuth0] = useState()
