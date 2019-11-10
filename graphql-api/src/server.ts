@@ -1,10 +1,17 @@
 import { ApolloServer, gql } from 'apollo-server'
+import { default as User, IUser } from './models/User';
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/sociallist', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 const typeDefs = gql`
   type Query {
-      getGroupsBy(key: GroupKeys): [Group]
-      getUserSBy(key:UserKeys): [User]
-      getListsBy(key: ListKeys): [List]
+      getGroupsBy(key: String): [Group]
+      getUserSBy(key:String): [User]
+      getListsBy(key: String): [List]
    }
 
    type Mutation {
@@ -76,7 +83,7 @@ const typeDefs = gql`
   }
 
   type User {
-    id: ID!
+    id: String!
     name: String!
     email: String!
     image: String
@@ -103,18 +110,43 @@ const typeDefs = gql`
   }
 `;
 
-
 const resolvers = {
   Query: {
-    getGroupsBy(key){ return []},
-    getUserSBy(key){ return []},
-    getListsBy(key){ return []}
+    getGroupsBy(key) { return [] },
+    getUserSBy(key) { return [] },
+    getListsBy(key) { return [] }
   },
   Mutation: {
-    createGroup(groupData){ return {} },
-    createUser(userData){ return {} },
-    createList(listData){ return {} },
-    createItem(itemData){ return {} }, 
+    createGroup(groupData, values) {
+      console.log(groupData, values);
+
+      return {
+        id: "fake id",
+        name: "fake name",
+        email: "fake email",
+        image: "fake image",
+        active: "fake active"
+      }
+    },
+    createUser: async function (context, { userData }) {
+      const input: IUser = userData;
+      const newUser = new User(input)
+
+
+      try {
+        let result = await newUser.save();
+        console.log(newUser.toClient())
+        if (result) {
+          return newUser.toClient()
+        }else {
+          console.log('ooops' ,)
+        }
+      } catch (e) {
+        console.log('deu ruim ', e)
+      }
+    },
+    createList(listData) { return {} },
+    createItem(itemData) { return {} },
   }
 }
 
