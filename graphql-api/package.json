@@ -2,11 +2,13 @@
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.5.0",
     "@types/express": "^4.17.1",
+    "@types/mongoose": "^5.5.30",
     "apollo-datasource-rest": "latest",
     "apollo-server": "2.1.0",
     "express": "^4.17.1",
     "graphql": "14.0.2",
-    "lodash": "4.17.15"
+    "lodash": "4.17.15",
+    "mongoose": "^5.7.9"
   },
   "devDependencies": {
     "@types/graphql": "14.0.1",
