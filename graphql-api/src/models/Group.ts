@@ -3,33 +3,31 @@ import {Schema, Document} from 'mongoose'
 import {default as User, IUser } from './User';
 import {toClient} from '../utils'
 
-export interface IItem extends Document {
-  name: string,
-  amount: number,
-  image: string,
-  url: string,
-  dataSource: string,
-  user: IUser
+export interface IGroup extends Document {
+  name: string
+  image: string
+  owner: IUser
+  users: IUser[]
+  active: boolean
 }
 
-export const ItemSchema:Schema<IItem> = new Schema({
+export const ItemSchema:Schema<IGroup> = new Schema({
   name: String,
-  amount: Number,
   image: String,
-  url: String,
-  dataSource: String,
-  user: User
+  owner: User,
+  users: [User],
+  active: Boolean
 });
 
-export default mongoose.model<IItem>('Item', toClient(ItemSchema));
+export default mongoose.model<IGroup>('Item', toClient(ItemSchema));
 
 
 /*
 type List {
     id: ID!
-    name: String!
+    name: string!
     active: Boolean!
-    expiresAt:String
+    expiresAt:string
     owner: User!
     group: Group!
     items: [Item]

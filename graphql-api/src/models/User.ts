@@ -4,10 +4,10 @@ import {toClient} from '../utils'
 
 
 export interface IUser extends Document {
-  name: String,
-  email: String,
-  image: String,
-  active: Boolean
+  name: string,
+  email: string,
+  image: string,
+  active: boolean
   toClient?(): IUser
 }
 
