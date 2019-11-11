@@ -11,7 +11,7 @@ export interface IUser extends Document {
   toClient?(): IUser
 }
 
-const UserSchema: Schema = new Schema({
+export const UserSchema: Schema = new Schema({
   name: String,
   email: String,
   image: String,
