@@ -2,17 +2,15 @@ import { gql } from 'apollo-server'
 
 export default gql`
   type Query {
-      getGroupsBy(key: String): [Group]
-      getUserSBy(key:String): [User]
-      getListsBy(key: String): [List]
+      getGroupsBy(name: String, owner: String, active: Boolean): [Group]
+      getUserSBy(name: String, email: String, active: Boolean): [User]
+      getListsBy(name: String, owner: String, group: String, active: Boolean): [List]
    }
 
    type Mutation {
     createGroup(groupData: GroupInput): Group
     createUser(userData: UserInput): User
     createList(listData: ListInput): List
-    createItem(itemData: ItemInput): Item 
-
   }
   
   enum UserKeys {
@@ -41,7 +39,6 @@ export default gql`
 
   input UserInput {
     name: String!
-    name: String!
     email: String!
     image: String
     active: Boolean
@@ -62,18 +59,17 @@ export default gql`
     image: String
     url: String
     dataSource: String
-    user: UserInput!
   }
 
 
   type List {
     id: ID!
+    name: String!
     active: Boolean!
     expiresAt:String
-    name: String!
     owner: ID!
     group: ID!
-    items: [ID]
+    items: [Item]
   }
 
   type User {
@@ -94,12 +90,10 @@ export default gql`
   }
 
   type Item {
-    id: ID!
     name: String!
     amount: Int!
     image: String
     url: String
     dataSource: String
-    user: User!
   }
 `;

@@ -12,9 +12,54 @@ mongoose.connect('mongodb://localhost/sociallist', {
 
 const resolvers = {
   Query: {
-    getGroupsBy(key) { return [] },
-    getUserSBy(key) { return [] },
-    getListsBy(key) { return [] }
+    getGroupsBy: async function (context, args) {
+
+      let regexMap = {}
+      for (let i in args) {
+        if( typeof i === 'string'){
+          regexMap[i] = new RegExp(args[i], 'i')
+        }else {
+          regexMap[i] = i
+        }
+      }
+
+      const result = await Group.find(regexMap);
+      console.log(result, regexMap);
+
+      return [...result.map(group => new Group(group).toClient())]
+    },
+    getUserSBy: async function (context, args) {
+
+      let regexMap = {}
+      for (let i in args) {
+        if( typeof i === 'string'){
+          regexMap[i] = new RegExp(args[i], 'i')
+        }else {
+          regexMap[i] =  i
+        }
+      }
+
+      const result = await User.find(regexMap);
+      console.log(result, regexMap);
+
+      return [...result.map(user => new User(user).toClient())]
+    },
+    getListsBy: async function(context, args) { 
+
+      let regexMap = {}
+      for (let i in args) {
+        if( typeof i === 'string'){
+          regexMap[i] = new RegExp(args[i], 'i')
+        }else {
+          regexMap[i] =  i
+        }
+      }
+
+      const result = await List.find(regexMap);
+      console.log(result, regexMap);
+
+      return [...result.map(list => new List(list).toClient())]
+     }
   },
   Mutation: {
     createGroup: async function (context, { groupData }) {
@@ -41,9 +86,10 @@ const resolvers = {
       }
     },
     createUser: async function (context, { userData }) {
-      const input: IUser = userData;
-      const newUser = new User(input)
+
       try {
+        const input: IUser = userData;
+        const newUser = new User(input)
         let result = await newUser.save();
         if (result) {
           return newUser.toClient()
@@ -67,11 +113,11 @@ const resolvers = {
         } as IList)
 
         const result = await newList.save()
-        
+
         if (result) {
+          console.log(newList.toClient())
           return {
             ...newList.toClient(),
-            items: ["123", "123", "123", "123"],
           }
         } else {
           console.log('ooops')
@@ -81,7 +127,6 @@ const resolvers = {
         console.error('deu ruim ', e);
       }
     },
-    createItem(itemData) { return {} },
   }
 }
 
