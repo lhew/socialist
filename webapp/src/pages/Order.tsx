@@ -77,8 +77,6 @@ export default () => {
         </div>
       )}
       {loading && <Spin />}
-      {process.env.REACT_APP_CLIENT_ID}
-      {process.env.REACT_APP_DOMAIN}
 
       <Formik initialValues={initialValues} enableReinitialize onSubmit={nullSubmit}>
         {form => (

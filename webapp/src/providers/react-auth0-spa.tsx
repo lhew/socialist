@@ -2,25 +2,22 @@ import * as React from 'react'
 import { useState, useEffect, useContext, createContext } from 'react'
 import createAuth0Client from '@auth0/auth0-spa-js'
 
-// interface IAuth0ProviderProps {
-//   children: React.ReactNode
-//   domain: string
-//   client_id: string
-//   redirect_uri: string
-//   loginWithPopup?(options?: PopupLoginOptions, config?: PopupConfigOptions): Promise<void>
-//   onRedirectCallback(appState: any): void
-// }
-
-export interface IAuth0 {
-  user: any
-  isAuthenticated: boolean
-  loading?: boolean
-}
-
 const DEFAULT_REDIRECT_CALLBACK = () =>
-  window.history.replaceState({}, document.title, window.location.pathname)
+  window.history.replaceState({}, 'Autenticou disgraca', window.location.pathname)
 
-export const Auth0Context = createContext({} as any)
+export const Auth0Context = createContext({
+  loginWithRedirect: (...p) => null,
+  logout: () => null,
+  loginWithPopup: async () => new Promise(r => r()),
+  handleRedirectCallback: async () => new Promise(r => r()),
+  getIdTokenClaims: async () => new Promise(r => r()),
+  getTokenSilently: async () => new Promise(r => r()),
+  getTokenWithPopup: async () => new Promise(r => r()),
+  isAuthenticated: false,
+  loading: false,
+  popupOpen: false,
+  user: {},
+})
 export const useAuth0 = () => useContext(Auth0Context)
 export const Auth0Provider = ({
   children,
