@@ -7,6 +7,8 @@ const Callback = ({ history }) => {
     const asyncFn = async () => {
       try {
         await auth.handleAuthentication()
+        const token = await auth.getIdToken()
+        localStorage.setItem('auth-token', JSON.stringify(token))
         history.replace('/')
       } catch (e) {
         console.log('q merda foi essa ', e)

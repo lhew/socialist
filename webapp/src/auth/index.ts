@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js'
+import jwt_decode from 'jwt-decode'
 
 class Auth {
   public auth0: any
@@ -44,7 +45,7 @@ class Auth {
           return reject(err)
         }
 
-        console.log('login deu bom pay')
+        console.log('login deu bom pay', authResult)
         this.setSession(authResult)
         resolve('deu bom')
       })
@@ -82,11 +83,29 @@ class Auth {
   public silentAuth() {
     if (this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
+        console.log('e essa sessao ai')
+        const token = localStorage.getItem('auth-token')
+        if (token) {
+          try {
+            const parsedToken = JSON.parse(token)
+            const tokenResult = jwt_decode(parsedToken)
+
+            console.log(tokenResult)
+
+            resolve(tokenResult)
+          } catch (e) {
+            return reject('invalid token')
+          }
+        }
         this.auth0.checkSession({}, (err, authResult) => {
           if (err) {
+            console.log('ta cagada ', err)
             localStorage.removeItem(this.authFlag)
+            localStorage.removeItem('auth-token')
+
             return reject(err)
           }
+          console.log('ta suave ', authResult)
           this.setSession(authResult)
           resolve('ok')
         })

@@ -62,6 +62,9 @@ export default () => {
       try {
         const result = await auth.silentAuth()
         console.log('login result: ', result)
+        if (!result) {
+          auth.signIn()
+        }
         // window.location.reload()
         // console.log(' autenticou? ', auth.isAuthenticated())
         // if (!auth.getIdToken()) {
