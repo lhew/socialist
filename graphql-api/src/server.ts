@@ -3,22 +3,52 @@ import { default as User, IUser } from './models/User';
 import typeDefs from './typedefs'
 import Group, { IGroup } from './models/Group';
 import List, { IList } from './models/List';
-const mongoose = require('mongoose');
+require('dotenv').config()
+
+import * as  mongoose from 'mongoose';
+const jwt = require('jsonwebtoken');
+const jwksClient = require('jwks-rsa');
+
 
 mongoose.connect('mongodb://localhost/sociallist', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
 
+const client = jwksClient({
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+});
+
+function getKey(header, cb) {
+  client.getSigningKey(header.kid, function (err, key) {
+    if (err){
+      cb(null, err);
+    }
+    var signingKey =  key.publicKey;
+    cb(null, signingKey);
+  });
+}
+
+
+const options = {
+  audience: process.env.AUTH0_CLIENT_ID,
+  issuer: `https://${process.env.AUTH0_DOMAIN}/`,
+  algorithms: ['RS256']
+};
+
 const resolvers = {
   Query: {
+    ping: async function(_, __, context) {
+      console.log(_, context)
+      return await "PING"
+    },  
     getGroupsBy: async function (context, args) {
 
       let regexMap = {}
       for (let i in args) {
-        if( typeof i === 'string'){
+        if (typeof i === 'string') {
           regexMap[i] = new RegExp(args[i], 'i')
-        }else {
+        } else {
           regexMap[i] = i
         }
       }
@@ -32,10 +62,10 @@ const resolvers = {
 
       let regexMap = {}
       for (let i in args) {
-        if( typeof i === 'string'){
+        if (typeof i === 'string') {
           regexMap[i] = new RegExp(args[i], 'i')
-        }else {
-          regexMap[i] =  i
+        } else {
+          regexMap[i] = i
         }
       }
 
@@ -44,14 +74,14 @@ const resolvers = {
 
       return [...result.map(user => new User(user).toClient())]
     },
-    getListsBy: async function(context, args) { 
+    getListsBy: async function (context, args) {
 
       let regexMap = {}
       for (let i in args) {
-        if( typeof i === 'string'){
+        if (typeof i === 'string') {
           regexMap[i] = new RegExp(args[i], 'i')
-        }else {
-          regexMap[i] =  i
+        } else {
+          regexMap[i] = i
         }
       }
 
@@ -59,15 +89,15 @@ const resolvers = {
       console.log(result, regexMap);
 
       return [...result.map(list => new List(list).toClient())]
-     }
+    }
   },
   Mutation: {
-    createGroup: async function (context, { groupData }) {
+    createGroup: async function (_, { groupData }, {user}) {
 
       try {
-
-        const user = await User.find()
-        const userModel = new User(user[0])
+        const email = await user as Promise<any>;
+        const dbUser = await User.find()
+        const userModel = new User(dbUser[0])
         const newGroup = new Group({
           ...groupData,
           owner: userModel.get('_id'),
@@ -85,9 +115,10 @@ const resolvers = {
         console.error('deu ruim ', e);
       }
     },
-    createUser: async function (context, { userData }) {
+    createUser: async function (_, { userData }, {user} ) {
 
       try {
+        const email = await user as Promise<any>;
         const input: IUser = userData;
         const newUser = new User(input)
         let result = await newUser.save();
@@ -100,15 +131,16 @@ const resolvers = {
         console.log('deu ruim ', e)
       }
     },
-    createList: async function (context, { listData }) {
+    createList: async function (_, { listData }, user) {
 
       try {
-        const user = new User(await User.findOne())
+        const email = await user as Promise<any>;
+        const userDb = new User(await User.findOne())
         const group = new Group(await Group.findOne())
 
         const newList = new List({
           ...listData,
-          owner: user.get('_id'),
+          owner: userDb.get('_id'),
           group
         } as IList)
 
@@ -133,7 +165,28 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req, res }) => ({ req, res })
+  context: async ({ req }) => {
+
+    const token = req.headers.authorization;
+    try{
+      const user = await jwt.verify(token, getKey, options, (err, decoded) => {
+        console.log('args: ', err, decoded);
+        if(err) {
+          return err;
+        }
+        return decoded;
+      });
+
+      return user
+      
+    }catch(e){
+      console.log('Deu errado ', e);
+    }
+
+
+
+
+  },
 });
 
 server.listen().then(({ url }) => console.log(`server started at ${url}`));

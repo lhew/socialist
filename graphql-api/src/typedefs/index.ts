@@ -2,6 +2,7 @@ import { gql } from 'apollo-server'
 
 export default gql`
   type Query {
+      ping: String,
       getGroupsBy(name: String, owner: String, active: Boolean): [Group]
       getUserSBy(name: String, email: String, active: Boolean): [User]
       getListsBy(name: String, owner: String, group: String, active: Boolean): [List]
