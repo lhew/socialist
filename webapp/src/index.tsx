@@ -1,10 +1,10 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import App from './App'
-import './index.css'
 import registerServiceWorker from './registerServiceWorker'
 import { Auth0Provider } from './providers/react-auth0-spa'
 import history from './utils/history'
+import './style.scss'
 
 const onRedirectCallback = appState => {
   history.push(appState && appState.targetUrl ? appState.targetUrl : window.location.pathname)

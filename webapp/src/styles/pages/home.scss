@@ -1,0 +1,11 @@
+.page-home {
+    display: grid;
+    grid-template: auto / auto;
+    gap: 2em;
+    padding: 1em;
+  }
+  
+  .page-home .submit-list {
+    font-size: 2em;
+    height: 2.5em;
+  }

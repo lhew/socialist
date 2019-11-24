@@ -1,6 +1,7 @@
 import * as React from 'react'
 import NotLoggedIn from '../templates/NotLoggedIn'
 import { Button } from 'antd'
+import auth from 'src/auth'
 // import { useAuth0 } from '../providers/react-auth0-spa'
 
 export default () => {
@@ -13,6 +14,7 @@ export default () => {
         size="large"
         onClick={e => {
           // console.log('oi', loginWithRedirect({}))
+          auth.signIn()
         }}
       >
         Login now

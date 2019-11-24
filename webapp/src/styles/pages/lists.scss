@@ -1,0 +1,19 @@
+  .search-wrapper{ 
+    display: grid;
+    grid-template: auto / 1fr auto;
+    gap: 1em 
+  }
+  
+  .list-item-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template: auto / 1fr auto;
+    gap: 1em;
+    align-items: center;
+  }
+  
+  .product-review {
+    display: grid;
+    grid-template: auto /auto 1fr auto;
+    gap: 2em;
+  }

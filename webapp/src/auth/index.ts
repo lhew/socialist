@@ -90,25 +90,28 @@ class Auth {
             const parsedToken = JSON.parse(token)
             const tokenResult = jwt_decode(parsedToken)
 
-            console.log(tokenResult)
+            console.log('parsedtoken: ', tokenResult)
+            this.setSession(true)
 
             resolve(tokenResult)
           } catch (e) {
+            console.log('validar token deu errado ', e)
             return reject('invalid token')
           }
-        }
-        this.auth0.checkSession({}, (err, authResult) => {
-          if (err) {
-            console.log('ta cagada ', err)
-            localStorage.removeItem(this.authFlag)
-            localStorage.removeItem('auth-token')
+        } else {
+          this.auth0.checkSession({}, (err, authResult) => {
+            if (err) {
+              console.log('ta cagada ', err)
+              localStorage.removeItem(this.authFlag)
+              localStorage.removeItem('auth-token')
 
-            return reject(err)
-          }
-          console.log('ta suave ', authResult)
-          this.setSession(authResult)
-          resolve('ok')
-        })
+              return reject(err)
+            }
+            console.log('ta suave ', authResult)
+            this.setSession(authResult)
+            resolve('ok')
+          })
+        }
       })
     }
 
@@ -117,6 +120,18 @@ class Auth {
 
   public isAuthenticated() {
     // Check whether the current time is past the token's expiry time
+    const token = localStorage.getItem('auth-token')
+    if (token) {
+      try {
+        const parsedToken = JSON.parse(token)
+        const tokenResult = jwt_decode(parsedToken)
+
+        console.log('token result isauthenticated: ', tokenResult)
+        return tokenResult && tokenResult.exp * 1000 > new Date().getTime()
+      } catch (e) {
+        return false
+      }
+    }
     // return new Date().getTime() < this.expiresAt
     return JSON.parse(localStorage.getItem(this.authFlag) || 'false')
   }
