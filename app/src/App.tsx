@@ -14,6 +14,7 @@ import Dashboard from './pages/dashboard'
 import Groups from './pages/groups'
 import Account from './pages/account'
 import Lists from './pages/lists'
+import CreateGroup from './pages/groups/CreateGroup'
 
 
 const client = new ApolloClient({
@@ -62,6 +63,7 @@ export default () => {
                     <>
                       <PrivateRoute path="/" exact component={Dashboard} />
                       <PrivateRoute path="/groups" exact component={Groups} />
+                      <PrivateRoute path="/groups/create" exact component={CreateGroup} />
                       <PrivateRoute path="/account" exact component={Account} />
                       <PrivateRoute path="/lists" exact component={Lists} />
                       <Route component={() => <p>Not found</p>} />

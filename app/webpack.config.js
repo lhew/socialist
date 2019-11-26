@@ -38,7 +38,8 @@ module.exports = {
 
 	output: {
 		filename: '[name].[chunkhash].js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist'),
+		publicPath: "/"
 	},
 	resolve: {
 		aliasFields: ['browser'],
