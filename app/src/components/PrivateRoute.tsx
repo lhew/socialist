@@ -16,8 +16,8 @@ const PrivateRoute = ({ component: Component, path, ...rest }: IPrivateRouteProp
   useEffect(() => {
     const fn = async () => {
       const result = await auth.isAuthenticated()
-      console.log('private routeresult: ', result)
-      console.log(rest)
+      // console.log('private routeresult: ', result)
+      // console.log(rest)
       if(!result) {
         
       }

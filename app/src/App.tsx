@@ -14,7 +14,7 @@ import Dashboard from './pages/dashboard'
 import Groups from './pages/groups'
 import Account from './pages/account'
 import Lists from './pages/lists'
-import CreateGroup from './pages/groups/CreateGroup'
+import CreateGroup from './pages/create-group'
 
 
 const client = new ApolloClient({
@@ -31,7 +31,7 @@ export default () => {
       }
       try {
         const result = await auth.silentAuth()
-        console.log('login result: ', result)
+        // console.log('login result: ', result)
         if (!result) {
           // auth.signIn()
         }
@@ -53,28 +53,27 @@ export default () => {
           <Route
             component={({ location }) => {
               return (
-                <>
-                  <Route path="/callback" component={Callback} />
-                  {!auth.isAuthenticated() && <>
-                  <Route path="/" exact component={Home} />
-                  <Route component={() => <p>Not found <a href="#" onClick={() => auth.signIn()}>Login again</a></p>} />
-                  </>}
-                  {auth.isAuthenticated() && (
-                    <>
+                  <div className="canvas">
+                    <Route path="/callback" component={Callback} />
+                    {!auth.isAuthenticated() && <>
+                      <Route path="/" exact component={Home} />
+                      <Route component={() => <p className="not-found">Not found <a href="#" onClick={() => auth.signIn()}>Login again</a></p>} />
+                    </>}
+                    {auth.isAuthenticated() && (<>
                       <PrivateRoute path="/" exact component={Dashboard} />
                       <PrivateRoute path="/groups" exact component={Groups} />
                       <PrivateRoute path="/groups/create" exact component={CreateGroup} />
                       <PrivateRoute path="/account" exact component={Account} />
                       <PrivateRoute path="/lists" exact component={Lists} />
-                      <Route component={() => <p>Not found</p>} />
+                      {/* <Route component={() => <p className="not-found">Not found</p>} /> */}
                     </>
-                  )}
-                </>
+                    )}
+                  </div>
               )
             }}
           />
         </Switch>
       </Router>
-   </ApolloProvider>
+    </ApolloProvider>
   )
 }

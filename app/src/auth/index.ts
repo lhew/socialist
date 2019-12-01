@@ -37,11 +37,11 @@ class Auth {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, authResult) => {
         if (err) {
-          console.log('deu merda? ', err)
+          // console.log('deu merda? ', err)
           return reject(err)
         }
         if (!authResult || !authResult.idToken) {
-          console.log('deu ruim? ', err)
+          // console.log('deu ruim? ', err)
           return reject(err)
         }
 
@@ -83,31 +83,31 @@ class Auth {
   public silentAuth() {
     if (this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
-        console.log('e essa sessao ai')
+        // console.log('e essa sessao ai')
         const token = localStorage.getItem('auth-token')
         if (token) {
           try {
             const parsedToken = JSON.parse(token)
             const tokenResult = jwt_decode(parsedToken)
 
-            console.log('parsedtoken: ', tokenResult)
+            // console.log('parsedtoken: ', tokenResult)
             this.setSession(true)
 
             resolve(tokenResult)
           } catch (e) {
-            console.log('validar token deu errado ', e)
+            // console.log('validar token deu errado ', e)
             return reject('invalid token')
           }
         } else {
           this.auth0.checkSession({}, (err, authResult) => {
             if (err) {
-              console.log('ta cagada ', err)
+              // console.log('ta cagada ', err)
               localStorage.removeItem(this.authFlag)
               localStorage.removeItem('auth-token')
 
               return reject(err)
             }
-            console.log('ta suave ', authResult)
+            // console.log('ta suave ', authResult)
             this.setSession(authResult)
             resolve('ok')
           })
@@ -126,7 +126,7 @@ class Auth {
         const parsedToken = JSON.parse(token)
         const tokenResult = jwt_decode(parsedToken)
 
-        console.log('token result isauthenticated: ', tokenResult)
+        // console.log('token result isauthenticated: ', tokenResult)
         return tokenResult && tokenResult.exp * 1000 > new Date().getTime()
       } catch (e) {
         return false

@@ -21,7 +21,7 @@ export default ({ children, subtitle }: ILoggedInProps) => {
   }
 
   return (
-    <div className="canvas">
+    <>
       <Menu onClick={handleClick} selectedKeys={[state.current]} mode="vertical">
         <Menu.Item key="dashboard">
           <Link to="/">
@@ -55,6 +55,6 @@ export default ({ children, subtitle }: ILoggedInProps) => {
         />{' '}
         {children}
       </div>
-    </div>
+    </>
   )
 }
