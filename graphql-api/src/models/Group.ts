@@ -5,7 +5,7 @@ import { ObjectID } from "mongodb";
 export interface IGroup extends Document {
   name: string
   image: string
-  owner: ObjectID
+  owner: string
   users: string[]
   active: boolean
   toClient?(): IGroup
@@ -14,7 +14,7 @@ export interface IGroup extends Document {
 export const GroupSchema: Schema<IGroup> = new Schema({
   name: String,
   image: String,
-  owner: ObjectID,
+  owner: String,
   users: [String],
   active: Boolean
 });
@@ -23,8 +23,6 @@ GroupSchema.method('toClient', function () {
   const obj = this.toObject();
   obj.id = `${obj._id}`;
   delete obj._id;
-
-  obj.owner = `${obj.owner}`;
   // obj.users = [...obj.users.map(user =>`${user}` )]
 
   return obj;

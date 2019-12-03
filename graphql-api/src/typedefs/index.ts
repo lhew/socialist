@@ -33,7 +33,7 @@ export default gql`
   input GroupInput {
     name: String!
     image: String
-    owner: ID!
+    owner: String!
     users: [String!]
     active: Boolean
   }
@@ -50,8 +50,8 @@ export default gql`
     name: String!
     active: Boolean!
     expiresAt:String
-    owner: ID!
-    group: ID!
+    owner: String!
+    group: String!
     items: [ItemInput]
   }
 
@@ -87,7 +87,7 @@ export default gql`
     id: ID!
     name: String!
     image: String
-    owner: ID!
+    owner: String!
     users: [String]
     active: Boolean
   }

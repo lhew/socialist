@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer, AuthenticationError } from 'apollo-server'
 import { default as User, IUser } from './models/User';
 import typeDefs from './typedefs'
 import Group, { IGroup } from './models/Group';
@@ -42,7 +42,16 @@ const resolvers = {
       console.log(_, context)
       return await "PING"
     },  
-    getGroupsBy: async function (context, args) {
+    getGroupsBy: async function (_, args, {sub}) {
+      if(JSON.stringify(args) == "{}") {
+        return []
+      }
+
+      const user = await User.find({authId: sub});
+      if(args.owner !== `${user[0]._id}`){
+        throw new AuthenticationError('Token and query owner mismatch')
+
+      }
 
       let regexMap = {}
       for (let i in args) {
@@ -54,11 +63,10 @@ const resolvers = {
       }
 
       const result = await Group.find(regexMap);
-      console.log(result, regexMap);
 
       return [...result.map(group => new Group(group).toClient())]
     },
-    getUsersBy: async function (context, args) {
+    getUsersBy: async function (context, args, {user}) {
 
       let regexMap = {}
       for (let i in args) {
@@ -70,7 +78,6 @@ const resolvers = {
       }
 
       const result = await User.find(regexMap);
-      console.log(result, regexMap);
 
       return [...result.map(user => new User(user).toClient())]
     },
@@ -97,11 +104,11 @@ const resolvers = {
       try {
         const email = await user as Promise<any>;
         const dbUser = await User.find()
-        const userModel = new User(dbUser[0])
+        // const userModel = new User(dbUser[0])
         const newGroup = new Group({
           ...groupData,
-          owner: userModel.get('_id'),
-          users: [userModel.get('_id')]
+          owner: groupData.owner,
+          users: groupData.users
         })
         const result = await newGroup.save()
 
@@ -169,23 +176,21 @@ const server = new ApolloServer({
 
     const token = req.headers.authorization;
     try{
-      const user = await jwt.verify(token, getKey, options, (err, decoded) => {
-        console.log('args: ', err, decoded);
-        if(err) {
-          return err;
-        }
-        return decoded;
-      });
+      const resolver = new Promise((resolve, reject) => {
+        jwt.verify(token, getKey, options, (err, decoded) => {
+          if(err) {
+            return reject(err);
+          }
+          return resolve(decoded);
+        });
+      }) 
 
+      const user = await resolver;
       return user
       
     }catch(e){
       console.log('Deu errado ', e);
     }
-
-
-
-
   },
 });
 
