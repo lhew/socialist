@@ -17,6 +17,8 @@ export const CREATE_GROUP = gql`
         id
         name
         active
+        owner
+        users
     }
   }
 `;

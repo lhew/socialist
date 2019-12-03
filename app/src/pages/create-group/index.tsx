@@ -103,7 +103,7 @@ const CreateGroup: React.FunctionComponent<any> = () => {
                         key={user.index}
                         name={`users[${index}].email`}
                         placeholder={`User #${index + 1} email`}
-                        onKeyUp={event => handleEnterPress(event, form.setValues, form.values)}
+                        onKeyDown={event => handleEnterPress(event, form.setValues, form.values)}
                         component={FormField}
                     />)}
                     <Button loading={loading} disabled={!form.isValid || loading} htmlType="submit">Submit</Button>
