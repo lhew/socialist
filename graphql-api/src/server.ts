@@ -58,7 +58,7 @@ const resolvers = {
 
       return [...result.map(group => new Group(group).toClient())]
     },
-    getUserSBy: async function (context, args) {
+    getUsersBy: async function (context, args) {
 
       let regexMap = {}
       for (let i in args) {

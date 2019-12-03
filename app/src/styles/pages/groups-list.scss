@@ -3,7 +3,7 @@
     &__grid {
         display: grid;
         grid-template: auto / 1fr 1fr;
-        max-width: 60em;
+        max-width: 40em;
         gap: 2em;
 
         .ant-card {

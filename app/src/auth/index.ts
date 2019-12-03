@@ -7,6 +7,7 @@ class Auth {
   public expiresAt: number
   public authFlag: string
 
+
   constructor() {
     // this.auth0 = null;
     this.auth0 = new auth0.WebAuth({
@@ -15,7 +16,7 @@ class Auth {
       redirectUri: 'http://localhost:3000/callback',
       audience: `https://${process.env.REACT_APP_DOMAIN}/userinfo`,
       responseType: 'token id_token',
-      scope: 'openid email',
+      scope: 'openid email profile',
     })
 
     this.authFlag = 'isLoggedIn'
@@ -30,10 +31,25 @@ class Auth {
   }
 
   public getIdToken() {
-    return this.idToken
+    return this.idToken || JSON.parse(localStorage.getItem('auth-token'))
   }
 
-  public handleAuthentication() {
+  public getUser(id) {
+    return new Promise((resolve, reject) => {
+
+      this.auth0.getUser(id, function(err, user){
+        if(err){
+          reject(err)
+        }
+
+        resolve(user)
+      })
+
+    })
+
+  }
+
+  public handleAuthentication():Promise<any> {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, authResult) => {
         if (err) {
@@ -47,7 +63,7 @@ class Auth {
 
         console.log('login deu bom pay', authResult)
         this.setSession(authResult)
-        resolve('deu bom')
+        resolve(authResult)
       })
     })
   }
@@ -81,14 +97,14 @@ class Auth {
   // }
 
   public silentAuth() {
+    console.log('ea e')
     if (this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
         // console.log('e essa sessao ai')
-        const token = localStorage.getItem('auth-token')
+        const token = JSON.parse(localStorage.getItem('auth-token'))
         if (token) {
           try {
-            const parsedToken = JSON.parse(token)
-            const tokenResult = jwt_decode(parsedToken)
+            const tokenResult = jwt_decode(token)
 
             // console.log('parsedtoken: ', tokenResult)
             this.setSession(true)
@@ -120,11 +136,11 @@ class Auth {
 
   public isAuthenticated() {
     // Check whether the current time is past the token's expiry time
-    const token = localStorage.getItem('auth-token')
+    const token = JSON.parse(localStorage.getItem('auth-token'))
     if (token) {
       try {
-        const parsedToken = JSON.parse(token)
-        const tokenResult = jwt_decode(parsedToken)
+        // const parsedToken = JSON.parse(token)
+        const tokenResult = jwt_decode(token)
 
         // console.log('token result isauthenticated: ', tokenResult)
         return tokenResult && tokenResult.exp * 1000 > new Date().getTime()

@@ -6,7 +6,7 @@ export interface IGroup extends Document {
   name: string
   image: string
   owner: ObjectID
-  users: ObjectID[]
+  users: string[]
   active: boolean
   toClient?(): IGroup
 }
@@ -15,7 +15,7 @@ export const GroupSchema: Schema<IGroup> = new Schema({
   name: String,
   image: String,
   owner: ObjectID,
-  users: [ObjectID],
+  users: [String],
   active: Boolean
 });
 
@@ -25,7 +25,7 @@ GroupSchema.method('toClient', function () {
   delete obj._id;
 
   obj.owner = `${obj.owner}`;
-  obj.users = [...obj.users.map(user =>`${user}` )]
+  // obj.users = [...obj.users.map(user =>`${user}` )]
 
   return obj;
 })

@@ -5,7 +5,7 @@ import { Switch, Route, Router } from 'react-router-dom'
 import Order from './pages/Order'
 import history from './utils/history'
 import { Spin } from 'antd'
-import Callback from './pages/Callback'
+import Callback, { ITokenPayload } from './pages/Callback'
 // import jwt_decode from 'jwt-decode'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
@@ -15,14 +15,25 @@ import Groups from './pages/groups'
 import Account from './pages/account'
 import Lists from './pages/lists'
 import CreateGroup from './pages/create-group'
+import UserProvider from './providers/UserProvider'
+import { GET_USER_BY_ATTRIBUTE } from './graphql/queries'
 
 
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'
+export const client = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_CLIENT,
+  request: operation => {
+    operation.setContext(context => ({
+      headers: {
+        ...context.headers,
+        authorization: auth.getIdToken(),
+      },
+    }));
+  },
 })
 
-
 export default () => {
+
+  const [authResult, setAuthResult] = React.useState({});
 
   React.useEffect(() => {
     const asyncFn = async () => {
@@ -30,11 +41,15 @@ export default () => {
         return
       }
       try {
-        const result = await auth.silentAuth()
-        // console.log('login result: ', result)
-        if (!result) {
-          // auth.signIn()
-        }
+        const result = await auth.silentAuth() as ITokenPayload;
+        const queryUser = await client.query({
+          query: GET_USER_BY_ATTRIBUTE,
+          variables: {
+            email: result.email
+          }
+        });
+
+        setAuthResult(queryUser.data.getUsersBy[0])
       } catch (err) {
         if (err.error === 'login_required') {
           auth.signIn()
@@ -48,11 +63,12 @@ export default () => {
 
   return (
     <ApolloProvider client={client}>
-      <Router history={history}>
-        <Switch>
-          <Route
-            component={({ location }) => {
-              return (
+      <UserProvider user={authResult}>
+        <Router history={history}>
+          <Switch>
+            <Route
+              component={({ location }) => {
+                return (
                   <div className="canvas">
                     <Route path="/callback" component={Callback} />
                     {!auth.isAuthenticated() && <>
@@ -69,11 +85,12 @@ export default () => {
                     </>
                     )}
                   </div>
-              )
-            }}
-          />
-        </Switch>
-      </Router>
+                )
+              }}
+            />
+          </Switch>
+        </Router>
+      </UserProvider>
     </ApolloProvider>
   )
 }

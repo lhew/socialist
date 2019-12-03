@@ -18,6 +18,18 @@
 
   .inner-content {
     padding: 2em;
-    max-width: 60em;
+    max-width: 40em;
   }
+
+.avatar-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1440px; 
+}
+
+.main-avatar {
+  position: absolute;
+    right: 1.66em;
+    top: -4em;
+}
   

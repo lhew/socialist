@@ -11,7 +11,7 @@ interface IPrivateRouteProps {
 
 const PrivateRoute = ({ component: Component, path, ...rest }: IPrivateRouteProps) => {
 
-  const isAuthenticated = localStorage.getItem('token')
+  const isAuthenticated = JSON.parse(localStorage.getItem('token'))
 
   useEffect(() => {
     const fn = async () => {

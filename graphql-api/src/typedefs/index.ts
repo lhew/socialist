@@ -4,7 +4,7 @@ export default gql`
   type Query {
       ping: String,
       getGroupsBy(name: String, owner: String, active: Boolean): [Group]
-      getUserSBy(name: String, email: String, active: Boolean): [User]
+      getUsersBy(name: String, email: String, authId: String, active: Boolean): [User]
       getListsBy(name: String, owner: String, group: String, active: Boolean): [List]
    }
 
@@ -34,13 +34,14 @@ export default gql`
     name: String!
     image: String
     owner: ID!
-    users: [ID!]
+    users: [String!]
     active: Boolean
   }
 
   input UserInput {
     name: String!
     email: String!
+    authId: String
     image: String
     active: Boolean
   }
@@ -77,6 +78,7 @@ export default gql`
     id: String!
     name: String!
     email: String!
+    authId: String
     image: String
     active: Boolean
   }
@@ -86,7 +88,7 @@ export default gql`
     name: String!
     image: String
     owner: ID!
-    users: [ID]
+    users: [String]
     active: Boolean
   }
 
