@@ -3,7 +3,6 @@ import Home from './pages/Home'
 import PrivateRoute from './components/PrivateRoute'
 import { Switch, Route, Router } from 'react-router-dom'
 import Order from './pages/Order'
-import history from './utils/history'
 import { Spin } from 'antd'
 import Callback, { ITokenPayload } from './pages/Callback'
 // import jwt_decode from 'jwt-decode'
@@ -17,6 +16,10 @@ import Lists from './pages/lists'
 import CreateGroup from './pages/create-group'
 import UserProvider from './providers/UserProvider'
 import { GET_USER_BY_ATTRIBUTE } from './graphql/queries'
+import { createBrowserHistory } from 'history'
+
+
+export const history = createBrowserHistory();
 
 
 export const client = new ApolloClient({

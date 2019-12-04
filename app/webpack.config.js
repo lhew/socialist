@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 /*
  * SplitChunksPlugin is enabled by default and replaced
@@ -73,7 +75,9 @@ module.exports = {
 						'style-loader',
 						{
 							loader: 'css-loader',
-							options: { importLoaders: 1, sourceMap: true },
+							options: { importLoaders: 1, 
+								sourceMap: true
+							 },
 						},
 						'postcss-loader',
 					],
@@ -85,8 +89,12 @@ module.exports = {
 					fallback: 'style-loader',
 
 					use: [
-						{ loader: 'css-loader', options: { sourceMap: true } },
-						{ loader: 'postcss-loader', options: { sourceMap: true } },
+						{ loader: 'css-loader', options: { 
+							sourceMap: true 
+						} },
+						{ loader: 'postcss-loader', options: { 
+							sourceMap: true 
+						} },
 						{
 							loader: 'sass-loader',
 							options: {
@@ -114,19 +122,18 @@ module.exports = {
 	},
 
 	optimization: {
+		minimize: true,
+		minimizer: [
+			new TerserPlugin(),
+			new OptimizeCssAssetsPlugin()
+		],
 		splitChunks: {
-			cacheGroups: {
-				vendors: {
-					priority: -10,
-					test: /[\\/]node_modules[\\/]/
-				}
-			},
-
-			chunks: 'async',
-			minChunks: 1,
-			minSize: 30000,
-			name: true
-		}
+			chunks: 'all',
+			name: false,
+		  },
+		  // Keep the runtime chunk seperated to enable long term caching
+		  // https://twitter.com/wSokra/status/969679223278505985
+		  runtimeChunk: true,
 	},
 
 	devServer: {
