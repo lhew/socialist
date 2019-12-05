@@ -55,7 +55,7 @@ module.exports = {
 			template: "index.html",
 			publicPath: "/"
 		}),
-		new webpack.ProgressPlugin(), 
+		new webpack.ProgressPlugin(),
 		new Dotenv()
 	],
 
@@ -75,9 +75,10 @@ module.exports = {
 						'style-loader',
 						{
 							loader: 'css-loader',
-							options: { importLoaders: 1, 
+							options: {
+								importLoaders: 1,
 								sourceMap: true
-							 },
+							},
 						},
 						'postcss-loader',
 					],
@@ -89,12 +90,16 @@ module.exports = {
 					fallback: 'style-loader',
 
 					use: [
-						{ loader: 'css-loader', options: { 
-							sourceMap: true 
-						} },
-						{ loader: 'postcss-loader', options: { 
-							sourceMap: true 
-						} },
+						{
+							loader: 'css-loader', options: {
+								sourceMap: true
+							}
+						},
+						{
+							loader: 'postcss-loader', options: {
+								sourceMap: true
+							}
+						},
 						{
 							loader: 'sass-loader',
 							options: {
@@ -130,10 +135,19 @@ module.exports = {
 		splitChunks: {
 			chunks: 'all',
 			name: false,
-		  },
-		  // Keep the runtime chunk seperated to enable long term caching
-		  // https://twitter.com/wSokra/status/969679223278505985
-		  runtimeChunk: true,
+			cacheGroups: {
+				vendor: {
+					test: /node_modules/,
+					chunks: "initial",
+					name: "vendor",
+					priority: 10,
+					enforce: true
+				},
+			}
+		},
+		// Keep the runtime chunk seperated to enable long term caching
+		// https://twitter.com/wSokra/status/969679223278505985
+		runtimeChunk: true,
 	},
 
 	devServer: {

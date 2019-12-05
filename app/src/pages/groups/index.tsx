@@ -29,7 +29,6 @@ const Groups: React.FunctionComponent<any> = () => {
 
 
     return (
-        <LoggedIn subtitle="Groups">
                 <div className="groups-list__grid inner-content">
                     {called && loading && <><Icon type="loading" /> Fetching your groups</>}
                     {error && <><Icon type="error" /> Something went wrong. try to access the page again</>}
@@ -40,7 +39,7 @@ const Groups: React.FunctionComponent<any> = () => {
                                 <span>Create new group</span>
                             </Card>
                         </Link>
-                        {data.getGroupsBy && data.getGroupsBy.map(group => (<Link key={group.id} to={`/groups/${group.id}`} >
+                        {data.getGroupsBy && data.getGroupsBy.map(group => (<Link key={group.id} to={`/groups/edit/${group.id}`} >
                             <Card>
                                 <Icon type="team" />
                                 <span>{group.name}</span>
@@ -50,7 +49,6 @@ const Groups: React.FunctionComponent<any> = () => {
                     </>}
                     {console.log(data)}
                 </div>
-        </LoggedIn>
     )
 }
 

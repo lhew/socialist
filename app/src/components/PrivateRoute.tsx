@@ -2,11 +2,14 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { Route, withRouter } from 'react-router-dom'
 import auth from '../auth'
+import { Icon } from 'antd'
+import LoggedIn from '../templates/LoggedIn'
 
 interface IPrivateRouteProps {
   component: React.FunctionComponent<any>
   path: string | string[]
-  exact: boolean
+  subtitle?: string
+  exact?: boolean
 }
 
 const PrivateRoute = ({ component: Component, path, ...rest }: IPrivateRouteProps) => {
@@ -18,8 +21,8 @@ const PrivateRoute = ({ component: Component, path, ...rest }: IPrivateRouteProp
       const result = await auth.isAuthenticated()
       // console.log('private routeresult: ', result)
       // console.log(rest)
-      if(!result) {
-        
+      if (!result) {
+
       }
       // if (!isAuthenticated) {
       //   await loginWithRedirect({
@@ -31,8 +34,22 @@ const PrivateRoute = ({ component: Component, path, ...rest }: IPrivateRouteProp
   }, [isAuthenticated, path])
 
   // const render = props => (isAuthenticated ? <Component {...props} /> : null)
+  const Loading = () => <>
+    <Icon type="loading" />
+    Loading...
+  </>;
 
-  return <Route path={path} render={props => <Component {...props} />} {...rest} />
+  return (
+    <Route
+      path={path}
+      {...rest}
+      render={props => (<LoggedIn subtitle={rest.subtitle || ""}>
+        <React.Suspense fallback={<Loading />}>
+          <Component {...props} />
+        </React.Suspense >
+      </LoggedIn>)}
+    />
+  )
 }
 
 export default PrivateRoute

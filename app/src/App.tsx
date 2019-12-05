@@ -2,18 +2,11 @@ import * as React from 'react'
 import Home from './pages/Home'
 import PrivateRoute from './components/PrivateRoute'
 import { Switch, Route, Router } from 'react-router-dom'
-import Order from './pages/Order'
-import { Spin } from 'antd'
 import Callback, { ITokenPayload } from './pages/Callback'
 // import jwt_decode from 'jwt-decode'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
 import auth from './auth'
-import Dashboard from './pages/dashboard'
-import Groups from './pages/groups'
-import Account from './pages/account'
-import Lists from './pages/lists'
-import CreateGroup from './pages/create-group'
 import UserProvider from './providers/UserProvider'
 import { GET_USER_BY_ATTRIBUTE } from './graphql/queries'
 import { createBrowserHistory } from 'history'
@@ -79,11 +72,12 @@ export default () => {
                       <Route component={() => <p className="not-found">Not found <a href="#" onClick={() => auth.signIn()}>Login again</a></p>} />
                     </>}
                     {auth.isAuthenticated() && (<>
-                      <PrivateRoute path="/" exact component={Dashboard} />
-                      <PrivateRoute path="/groups" exact component={Groups} />
-                      <PrivateRoute path="/groups/create" exact component={CreateGroup} />
-                      <PrivateRoute path="/account" exact component={Account} />
-                      <PrivateRoute path="/lists" exact component={Lists} />
+                      <PrivateRoute path="/" exact  subtitle="Dashboard" component={React.lazy(() => import("./pages/dashboard")) } />
+                      <PrivateRoute path="/groups" exact subtitle="Groups" component={React.lazy(() => import("./pages/groups")) } />
+                      <PrivateRoute path="/groups/edit/:id" subtitle="Groups/Edit" component={React.lazy(() => import("./pages/create-group")) } />
+                      <PrivateRoute path="/groups/create" exact subtitle="Groups/Create" component={React.lazy(() => import("./pages/create-group")) } />
+                      <PrivateRoute path="/account" exact subtitle="Account" component={React.lazy(() => import("./pages/account")) } />
+                      <PrivateRoute path="/lists" exact subtitle="Lists" component={React.lazy(() => import("./pages/lists")) } />
                       {/* <Route component={() => <p className="not-found">Not found</p>} /> */}
                     </>
                     )}

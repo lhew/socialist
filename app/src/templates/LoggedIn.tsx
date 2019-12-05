@@ -49,7 +49,7 @@ export default ({ children, subtitle }: ILoggedInProps) => {
             border: '1px solid rgb(235, 237, 240)',
           }}
           title={<h3>SocialList</h3>}
-          subTitle={subtitle}
+          subTitle={subtitle || ""}
         />
         <div className="avatar-wrapper">
           <Dropdown overlay={() => (

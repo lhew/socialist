@@ -43,7 +43,6 @@ const Account: React.FunctionComponent<any> = () => {
     }
 
     return (
-        <LoggedIn subtitle="Account">
             <div className=" inner-content">
                 <h3>Manage your account (soon)</h3>
                 <Formik
@@ -63,7 +62,6 @@ const Account: React.FunctionComponent<any> = () => {
                         </Form>
                 </Formik>
             </div>
-        </LoggedIn >
     )
 }
 

@@ -11,9 +11,7 @@ interface IInitialValues {
 const Dashboard:React.FunctionComponent<any> = () => {
     
     return (
-        <LoggedIn subtitle="Dashboard">
             <p>Create Dashboard</p>
-        </LoggedIn>
     )
 }
 
