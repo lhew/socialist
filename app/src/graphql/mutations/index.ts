@@ -22,3 +22,15 @@ export const CREATE_GROUP = gql`
     }
   }
 `;
+
+export const UPDATE_GROUP = gql`
+    mutation UpdateGroup($id: ID!, $groupData: GroupInput!){
+      updateGroup(id: $id, groupData: $groupData){
+        id
+        name
+        active
+        owner
+        users
+    }
+  }
+`;

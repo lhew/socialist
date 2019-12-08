@@ -10,7 +10,17 @@ export const GET_USER_BY_ATTRIBUTE = gql`
         }
     }`
 
-export const GET_GROUPS_BY = gql`
+export const GET_GROUPS_BY_ID = gql`
+    query groups($id: String){
+        getGroupsBy(_id: $id) {
+            id
+            name
+            owner
+            users
+        }
+    }`
+
+export const GET_GROUPS_BY_OWNER = gql`
     query groups($owner: String){
         getGroupsBy(owner: $owner) {
             id

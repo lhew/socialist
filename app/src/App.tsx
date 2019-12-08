@@ -69,13 +69,13 @@ export default () => {
                     <Route path="/callback" component={Callback} />
                     {!auth.isAuthenticated() && <>
                       <Route path="/" exact component={Home} />
-                      <Route component={() => <p className="not-found">Not found <a href="#" onClick={() => auth.signIn()}>Login again</a></p>} />
+                      {/* <Route component={() => <p className="not-found">Not found <a href="#" onClick={() => auth.signIn()}>Login again</a></p>} /> */}
                     </>}
                     {auth.isAuthenticated() && (<>
                       <PrivateRoute path="/" exact  subtitle="Dashboard" component={React.lazy(() => import("./pages/dashboard")) } />
                       <PrivateRoute path="/groups" exact subtitle="Groups" component={React.lazy(() => import("./pages/groups")) } />
-                      <PrivateRoute path="/groups/edit/:id" subtitle="Groups/Edit" component={React.lazy(() => import("./pages/create-group")) } />
-                      <PrivateRoute path="/groups/create" exact subtitle="Groups/Create" component={React.lazy(() => import("./pages/create-group")) } />
+                      <PrivateRoute path="/groups/edit/:id" subtitle="Groups/Edit" component={React.lazy(() => import("./pages/groups-form")) } />
+                      <PrivateRoute path="/groups/create" exact subtitle="Groups/Create" component={React.lazy(() => import("./pages/groups-form")) } />
                       <PrivateRoute path="/account" exact subtitle="Account" component={React.lazy(() => import("./pages/account")) } />
                       <PrivateRoute path="/lists" exact subtitle="Lists" component={React.lazy(() => import("./pages/lists")) } />
                       {/* <Route component={() => <p className="not-found">Not found</p>} /> */}

@@ -1,11 +1,13 @@
-import { ApolloServer, AuthenticationError } from 'apollo-server'
+import { ApolloServer, AuthenticationError, ApolloError } from 'apollo-server'
 import { default as User, IUser } from './models/User';
 import typeDefs from './typedefs'
 import Group, { IGroup } from './models/Group';
 import List, { IList } from './models/List';
+import * as  mongoose from 'mongoose';
+import { ObjectID } from 'bson';
+
 require('dotenv').config()
 
-import * as  mongoose from 'mongoose';
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 
@@ -21,10 +23,10 @@ const client = jwksClient({
 
 function getKey(header, cb) {
   client.getSigningKey(header.kid, function (err, key) {
-    if (err){
+    if (err) {
       cb(null, err);
     }
-    var signingKey =  key.publicKey;
+    var signingKey = key.publicKey;
     cb(null, signingKey);
   });
 }
@@ -38,22 +40,19 @@ const options = {
 
 const resolvers = {
   Query: {
-    ping: async function(_, __, context) {
+    ping: async function (_, __, context) {
       console.log(_, context)
       return await "PING"
-    },  
-    getGroupsBy: async function (_, args, {sub}) {
-      if(JSON.stringify(args) == "{}") {
+    },
+    getGroupsBy: async function (_, args, { sub, ...usr }) {
+      const user = await User.find({ authId: sub });
+      let result;
+      let regexMap = {}
+
+      if (!args || JSON.stringify(args) == "{}") {
         return []
       }
 
-      const user = await User.find({authId: sub});
-      if(args.owner !== `${user[0]._id}`){
-        throw new AuthenticationError('Token and query owner mismatch')
-
-      }
-
-      let regexMap = {}
       for (let i in args) {
         if (typeof i === 'string') {
           regexMap[i] = new RegExp(args[i], 'i')
@@ -62,11 +61,33 @@ const resolvers = {
         }
       }
 
-      const result = await Group.find(regexMap);
+      if (args && args.owner) {
+        if (args.owner === `${user[0]._id}`) {
+          result = await Group.find(regexMap);
+          if (result.length === 0) {
+            return [];
+          }
 
-      return [...result.map(group => new Group(group).toClient())]
+          return [...result.map(group => new Group(group).toClient())]
+        } else {
+          throw new AuthenticationError('args.owner error: Token and group owner mismatch')
+        }
+      }
+
+      if (args && args._id) {
+        result = await Group.findById(new ObjectID(args._id));
+        if (!result) {
+          return [];
+        } else if (result && (`${result.owner}` === `${user[0]._id}`)) {
+          return [new Group(result).toClient()]
+        } else {
+          console.log(result.owner, user[0]._id, result.owner === user[0]._id)
+          throw new AuthenticationError('args._id error: Token and group owner mismatch')
+        }
+      }
+
     },
-    getUsersBy: async function (context, args, {user}) {
+    getUsersBy: async function (context, args, { user }) {
 
       let regexMap = {}
       for (let i in args) {
@@ -99,7 +120,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    createGroup: async function (_, { groupData }, {user}) {
+    createGroup: async function (_, { groupData }, { user }) {
 
       try {
         const email = await user as Promise<any>;
@@ -122,7 +143,7 @@ const resolvers = {
         console.error('deu ruim ', e);
       }
     },
-    createUser: async function (_, { userData }, {user} ) {
+    createUser: async function (_, { userData }, { user }) {
 
       try {
         const email = await user as Promise<any>;
@@ -136,6 +157,27 @@ const resolvers = {
         }
       } catch (e) {
         console.log('deu ruim ', e)
+      }
+    },
+
+    updateGroup: async function (_, { id, groupData }, { sub }) {
+
+      const user = await User.find({ authId: sub });
+      let result: IGroup;
+
+      if (id && groupData) {
+        result = await Group.findById(new ObjectID(id));
+        if (result && (`${result.owner}` === `${user[0]._id}`)) {
+
+          const updatedDoc = result.overwrite(groupData);
+          await updatedDoc.save();
+          return new Group(updatedDoc).toClient();
+
+        } else {
+          console.log(result.owner, user[0]._id, result.owner === user[0]._id)
+          throw new AuthenticationError('args._id error: Token and group owner mismatch')
+        }
+
       }
     },
     createList: async function (_, { listData }, user) {
@@ -175,20 +217,20 @@ const server = new ApolloServer({
   context: async ({ req }) => {
 
     const token = req.headers.authorization;
-    try{
+    try {
       const resolver = new Promise((resolve, reject) => {
         jwt.verify(token, getKey, options, (err, decoded) => {
-          if(err) {
+          if (err) {
             return reject(err);
           }
           return resolve(decoded);
         });
-      }) 
+      })
 
       const user = await resolver;
       return user
-      
-    }catch(e){
+
+    } catch (e) {
       console.log('Deu errado ', e);
     }
   },

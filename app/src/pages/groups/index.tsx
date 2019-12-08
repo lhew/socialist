@@ -5,7 +5,7 @@ import { Card, Icon } from 'antd'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../../providers/UserProvider'
 import { useQuery, useLazyQuery } from 'react-apollo'
-import { GET_GROUPS_BY } from '../../graphql/queries'
+import { GET_GROUPS_BY_OWNER } from '../../graphql/queries'
 
 interface IInitialValues {
     item: string
@@ -15,7 +15,7 @@ interface IInitialValues {
 const Groups: React.FunctionComponent<any> = () => {
 
     const context = React.useContext(UserContext);
-    const [getGroupsBy, { called, data, loading, error }] = useLazyQuery(GET_GROUPS_BY)
+    const [getGroupsBy, { called, data, loading, error }] = useLazyQuery(GET_GROUPS_BY_OWNER)
 
     React.useEffect(() => {
         if (!called && context.user.id && context.user.id.length > 0) {

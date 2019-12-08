@@ -3,7 +3,7 @@ import { gql } from 'apollo-server'
 export default gql`
   type Query {
       ping: String,
-      getGroupsBy(name: String, owner: String, active: Boolean): [Group]
+      getGroupsBy(name: String, owner: String, active: Boolean, _id: String): [Group]
       getUsersBy(name: String, email: String, authId: String, active: Boolean): [User]
       getListsBy(name: String, owner: String, group: String, active: Boolean): [List]
    }
@@ -12,6 +12,7 @@ export default gql`
     createGroup(groupData: GroupInput): Group
     createUser(userData: UserInput): User
     createList(listData: ListInput): List
+    updateGroup(id: ID!, groupData: GroupInput!): Group
   }
   
   enum UserKeys {
@@ -93,8 +94,8 @@ export default gql`
   }
 
   type Item {
-    name: String!
-    amount: Int!
+    name: String
+    amount: Int
     image: String
     url: String
     dataSource: String

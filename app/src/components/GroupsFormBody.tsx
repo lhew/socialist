@@ -4,7 +4,7 @@ import { Formik, Field, Form } from 'formik'
 import FormField from './FormField'
 import { patterns } from '../shared/utils/validation'
 
-const GroupsForm = ({ title, initialValues, onSubmit, onValidate, loading, data }) => {
+const GroupsFormBody = ({ title, initialValues, onSubmit, onValidate, loading, data }) => {
 
     const emailRegexp = new RegExp(patterns.email, 'i')
     const handleEnterPress = (event, setValues, values) => {
@@ -31,7 +31,7 @@ const GroupsForm = ({ title, initialValues, onSubmit, onValidate, loading, data 
             onSubmit={onSubmit}
             validate={onValidate}
         >{(form) => <form onSubmit={form.handleSubmit}>
-            <Field label="group name" name="group" component={FormField} />
+            <Field label="group name" name="name" component={FormField} />
 
             <Divider />
 
@@ -53,4 +53,4 @@ const GroupsForm = ({ title, initialValues, onSubmit, onValidate, loading, data 
         </Formik></div>)
 }
 
-export default GroupsForm;
+export default GroupsFormBody;
