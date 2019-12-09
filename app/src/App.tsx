@@ -3,7 +3,6 @@ import Home from './pages/Home'
 import PrivateRoute from './components/PrivateRoute'
 import { Switch, Route, Router } from 'react-router-dom'
 import Callback, { ITokenPayload } from './pages/Callback'
-// import jwt_decode from 'jwt-decode'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
 import auth from './auth'
@@ -77,7 +76,7 @@ export default () => {
                       <PrivateRoute path="/groups/edit/:id" subtitle="Groups/Edit" component={React.lazy(() => import("./pages/groups-form")) } />
                       <PrivateRoute path="/groups/create" exact subtitle="Groups/Create" component={React.lazy(() => import("./pages/groups-form")) } />
                       <PrivateRoute path="/account" exact subtitle="Account" component={React.lazy(() => import("./pages/account")) } />
-                      <PrivateRoute path="/lists" exact subtitle="Lists" component={React.lazy(() => import("./pages/lists")) } />
+                      <PrivateRoute path="/lists" exact subtitle="Lists" component={React.lazy(() => import("./pages/lists-form")) } />
                       {/* <Route component={() => <p className="not-found">Not found</p>} /> */}
                     </>
                     )}

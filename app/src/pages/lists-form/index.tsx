@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import * as React from 'react'
 import LoggedIn from '../../templates/LoggedIn'
 
@@ -11,9 +10,9 @@ interface IInitialValues {
 const Lists:React.FunctionComponent<any> = () => {
     
     return (
-        <LoggedIn subtitle="Lists">
+
             <p>Create Lists</p>
-        </LoggedIn>
+
     )
 }
 
