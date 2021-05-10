@@ -10,7 +10,7 @@
     "graphql": "14.0.2",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.0",
-    "lodash": "4.17.15",
+    "lodash": "4.17.21",
     "mongoose": "^5.7.9"
   },
   "devDependencies": {
